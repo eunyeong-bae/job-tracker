@@ -7,6 +7,7 @@ export type ApplicationStatus =
     | 'ACCEPTED';
 
 export interface JobApplication {
+    id: number;
     companyName: string;
     position: string;
     status: ApplicationStatus;

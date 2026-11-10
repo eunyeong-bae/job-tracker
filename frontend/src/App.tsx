@@ -45,8 +45,9 @@ function App() {
       </thead>
       <tbody>
         {
-        data.map((jobApplication, index) => (
-          <tr key={index}>
+        data.map(jobApplication => (
+          <tr key={jobApplication.id}>
+            <td>{jobApplication.id}</td>
             <td>{jobApplication.companyName}</td>
             <td>{jobApplication.position}</td>
             <td>{jobApplication.status}</td>
