@@ -1,41 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useJobApplications } from './features/jobApplication/hook';
 import type { JobApplication } from './types/JobApplication';
 
 function App() {
-  const [data, setData] = useState<JobApplication[]>([]);
-  const [error, setError] = useState<string| null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const callJobApplications = async() => {
-        try{
-          const response = await fetch('/api/applications');
+  const { data: jobApplications, isError, isPending } = useJobApplications();
+  console.log("🚀 ~ App ~ jobApplications:", jobApplications)
 
-          if(!response.ok) {
-            console.log("🚀 ~ callJobApplications ~ response:", response)
-            throw new Error( `지원 목록 조회 실패 (${response.status})`);
-          }
-
-          const applications: JobApplication[] = await response.json();
-          setData(applications);
-
-        }catch(e) {
-          setError(e instanceof Error ? e.message : '알 수 없는 에러 발생');
-        }finally {
-          setLoading(false);
-        }
-      };
-
-      callJobApplications();
-  }, []);
-
-  if(loading) return <p>loading....</p>
-  if(error) return <p>{error}</p>
+  if(isPending) return <p>loading....</p>
+  console.log("🚀 ~ App ~ isError:", isError)
+  if(isError) return <p>지원 목록 조회 실패</p>
 
   return (
     <table >
       <thead >
         <tr>
+          <th>ID</th>
           <th>지원한 회사</th>
           <th>지원한 포지션</th>
           <th>지원 상태</th>
@@ -45,7 +24,7 @@ function App() {
       </thead>
       <tbody>
         {
-        data.map(jobApplication => (
+        jobApplications?.map((jobApplication: JobApplication) => (
           <tr key={jobApplication.id}>
             <td>{jobApplication.id}</td>
             <td>{jobApplication.companyName}</td>
