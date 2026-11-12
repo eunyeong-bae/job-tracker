@@ -13,3 +13,5 @@ export interface JobApplication {
     status: ApplicationStatus;
     salary: number | null;
 }
+
+export type JobApplicationRequest = Omit<JobApplication, 'id'>;
