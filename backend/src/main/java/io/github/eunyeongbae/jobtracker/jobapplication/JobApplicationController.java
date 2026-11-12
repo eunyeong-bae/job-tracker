@@ -1,8 +1,8 @@
 package io.github.eunyeongbae.jobtracker.jobapplication;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,5 +20,11 @@ public class JobApplicationController {
     @GetMapping
     public List<JobApplication> findAll() {
         return service.findAll();
+    }
+
+    @PostMapping
+    public ResponseEntity<JobApplication> create(@RequestBody CreateJobApplicationRequest request){
+        //service.create 호출 -> 201 상태로 결과 반환
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
 }
