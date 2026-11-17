@@ -18,12 +18,12 @@ public class JobApplicationController {
 
     //2.GET /api/applications: 지원 목록 전체 조회
     @GetMapping
-    public List<JobApplication> findAll() {
+    public List<JobApplicationResponse> findAll() {
         return service.findAll();
     }
 
     @PostMapping
-    public ResponseEntity<JobApplication> create(@RequestBody CreateJobApplicationRequest request){
+    public ResponseEntity<JobApplicationResponse> create(@RequestBody CreateJobApplicationRequest request){
         //service.create 호출 -> 201 상태로 결과 반환
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }

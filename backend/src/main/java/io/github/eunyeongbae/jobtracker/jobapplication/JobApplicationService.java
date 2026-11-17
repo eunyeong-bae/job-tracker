@@ -1,5 +1,6 @@
 package io.github.eunyeongbae.jobtracker.jobapplication;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -8,39 +9,34 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
+@Transactional(readOnly = true) // 기본은 읽기 전용 트랜잭션
 public class JobApplicationService {
-    // 메모리 저장소
-    private final List<JobApplication> store = new CopyOnWriteArrayList<>();
+    private final JobApplicationRepository repository;
 
-    // id 발급기.
-    private final AtomicLong sequence = new AtomicLong();
-
-    // 서버 시작 시 더미 데이터 등록
-    public JobApplicationService() {
-        create(new CreateJobApplicationRequest("A", "MOBILE frontend", Status.BEFORE_APPLY, 5100));
-        create(new CreateJobApplicationRequest("B", "WEB frontend", Status.INTERVIEW, 4700));
-        create(new CreateJobApplicationRequest("C", "frontend", Status.ASSIGNMENT, null));
+    // 생성자 주입 : spring이 repository 구현체를 넣어 줌
+    public JobApplicationService(JobApplicationRepository repository){
+        this.repository =  repository;
     }
 
     // 지원 목록 전체 조회
-    public List<JobApplication> findAll() {
-        return List.copyOf(store);
+    public List<JobApplicationResponse> findAll() {
+        return repository.findAll().stream()
+                .map(JobApplicationResponse::from)
+                .toList();
     }
 
     // 지원 현황 추가
-    public JobApplication create(CreateJobApplicationRequest request){
+   @Transactional
+    public JobApplicationResponse create(CreateJobApplicationRequest request) {
         JobApplication jobApplication = new JobApplication(
-            sequence.incrementAndGet(),
-            request.companyName(),
-            request.position(),
-            request.status(),
-            request.salary()
+                request.companyName(),
+                request.position(),
+                request.status(),
+                request.salary()
         );
 
-        store.add(jobApplication);
-
-        return jobApplication;
-    }
+        return JobApplicationResponse.from(repository.save(jobApplication));
+   }
 
 
 }
