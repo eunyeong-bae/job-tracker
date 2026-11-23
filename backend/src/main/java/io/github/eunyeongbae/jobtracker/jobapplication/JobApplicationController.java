@@ -1,5 +1,6 @@
 package io.github.eunyeongbae.jobtracker.jobapplication;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class JobApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<JobApplicationResponse> create(@RequestBody CreateJobApplicationRequest request){
+    public ResponseEntity<JobApplicationResponse> create(@Valid @RequestBody CreateJobApplicationRequest request){
         //service.create 호출 -> 201 상태로 결과 반환
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
