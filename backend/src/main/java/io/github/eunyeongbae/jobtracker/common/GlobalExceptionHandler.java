@@ -1,5 +1,6 @@
 package io.github.eunyeongbae.jobtracker.common;
 
+import io.github.eunyeongbae.jobtracker.jobapplication.JobApplicationNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,5 +28,11 @@ public class GlobalExceptionHandler {
 
         problem.setProperty("errors", errors);
         return problem;
+    }
+
+    // 지원 현황을 찾지 못함 -> 404
+    @ExceptionHandler(JobApplicationNotFoundException.class)
+    public ProblemDetail handleNotFound(JobApplicationNotFoundException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
     }
 }

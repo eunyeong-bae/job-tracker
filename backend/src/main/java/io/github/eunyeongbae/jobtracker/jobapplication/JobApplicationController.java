@@ -28,4 +28,20 @@ public class JobApplicationController {
         //service.create 호출 -> 201 상태로 결과 반환
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<JobApplicationResponse> updateStatus(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateStatusRequest request
+    ) {
+        return ResponseEntity.ok().body(service.updateStatus(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long id
+    ){
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

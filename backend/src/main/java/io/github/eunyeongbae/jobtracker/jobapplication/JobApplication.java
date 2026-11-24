@@ -41,4 +41,9 @@ public class JobApplication {
     public String getPosition() { return position; }
     public Status getStatus() { return status; }
     public Integer getSalary() { return salary; }
+
+    // 지원 상태 변경
+    public void changeStatus(Status status) {
+        this.status = status;
+    }
 }

@@ -38,5 +38,26 @@ public class JobApplicationService {
         return JobApplicationResponse.from(repository.save(jobApplication));
    }
 
+   // 지원 상태 변경
+    @Transactional
+    public JobApplicationResponse updateStatus(Long id, UpdateStatusRequest request) {
+        JobApplication jobApplication = repository.findById(id)
+                .orElseThrow(() -> new JobApplicationNotFoundException(id));
+
+        jobApplication.changeStatus(request.status());
+        // save() 호출하지 않아도 트랜잭션이 끝날 때 업데이트가 실행됨(변경감지)
+        return JobApplicationResponse.from(jobApplication);
+    }
+
+    // 지원 현황 삭제
+    @Transactional
+    public void delete(Long id) {
+        if(!repository.existsById(id)) {
+            throw new JobApplicationNotFoundException(id);
+        }
+
+        repository.deleteById(id);
+    }
+
 
 }
