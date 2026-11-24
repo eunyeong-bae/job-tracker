@@ -1,5 +1,6 @@
 import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import { fetchJobApplications, createJobApplication } from "./api";
+import { fetchJobApplications, createJobApplication, updateJobApplicationStatus, deleteJobApplication } from "./api";
+import type { ApplicationStatus } from "../../types/JobApplication";
 
 export const jobApplicationKeys = {
     all: ['jobApplications'] as const,
@@ -24,4 +25,30 @@ export const useCreateJobApplication = () => {
             })
         }
     });
+}
+
+export const useUpdateJobApplicationStatus = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({id, status}: {id: number; status: ApplicationStatus}) => updateJobApplicationStatus(id, status),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: jobApplicationKeys.all
+            });
+        }
+    }) 
+}
+
+export const useDeleteJobApplication = () => {
+    const queryClient = useQueryClient();
+    
+    return useMutation({
+        mutationFn: deleteJobApplication,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: jobApplicationKeys.all
+            });
+        }
+    })
 }

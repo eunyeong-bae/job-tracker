@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {useCreateJobApplication} from '../features/jobApplication/hook'
-import type { JobApplicationRequest } from '../types/JobApplication';
+import type { ApplicationStatus, JobApplicationRequest } from '../types/JobApplication';
+import { STATUS_LABEL } from '../features/jobApplication/constants';
 
 const initialForm: JobApplicationRequest = {
     companyName: '',
@@ -57,14 +58,13 @@ function JobApplicationForm() {
                     id="status" 
                     required
                     value={form.status}
-                    onChange={(e) => setForm((prev) => ({...prev, status: e.target.value as JobApplicationRequest['status']}))}
+                    onChange={(e) => setForm((prev) => ({...prev, status: e.target.value as ApplicationStatus}))}
                 >
-                    <option value="BEFORE_APPLY">지원 전</option>
-                    <option value="APPLIED">지원 완료</option>
-                    <option value="ASSIGNMENT">과제 진행 중</option>
-                    <option value="INTERVIEW">면접 진행 중</option>
-                    <option value="REJECTED">탈락</option>
-                    <option value="ACCEPTED">합격</option>
+                    {Object.entries(STATUS_LABEL).map(([value, label]) => (
+                        <option key={value} value={value}>
+                            {label}
+                        </option>
+                    ))}
                 </select>
             </div>
             <div>
