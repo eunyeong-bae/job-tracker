@@ -22,3 +22,10 @@ export interface ProblemDetail {
     detail?: string;
     errors?: Record<string, string>;
 }
+
+export type SortOption = 'id,desc' | 'salary,desc' | 'companyName,asc';
+
+export interface JobApplicationFilters{
+    status?: ApplicationStatus; //없으면 전체
+    sort: SortOption;
+}

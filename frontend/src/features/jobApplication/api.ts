@@ -2,7 +2,8 @@ import type {
     ApplicationStatus, 
     JobApplication, 
     JobApplicationRequest, 
-    ProblemDetail 
+    ProblemDetail,
+    JobApplicationFilters
 } from '../../types/JobApplication';
 
 // 실패 응답이면 ProblemDetail 읽어 에러 던지는 공통 함수
@@ -18,8 +19,10 @@ const throwIfNotOk = async(response: Response, fallback: string) => {
     throw new Error(message);
 }
 
-export const fetchJobApplications = async():Promise<JobApplication[]> => {
-    const response = await fetch('/api/applications');
+export const fetchJobApplications = async(filters: JobApplicationFilters):Promise<JobApplication[]> => {
+    const params = new URLSearchParams({sort: filters.sort});
+    if(filters.status) params.set('status', filters.status);
+    const response = await fetch(`/api/applications?${params}`);
 
     await throwIfNotOk(response, '지원 목록 조회 실패');
 

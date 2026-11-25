@@ -1,10 +1,16 @@
+import {useState} from 'react';
 import JobApplicationForm from './components/JobApplicationForm';
 import { STATUS_LABEL } from './features/jobApplication/constants';
 import { useDeleteJobApplication, useJobApplications, useUpdateJobApplicationStatus } from './features/jobApplication/hook';
-import { type ApplicationStatus} from './types/JobApplication';
+import type {  ApplicationStatus, JobApplicationFilters} from './types/JobApplication';
+import JobApplicationFilterBar from './components/JobApplicationFilterBar';
 
 function App() {
-  const { data: jobApplications, isError, isPending, error } = useJobApplications();
+  const [filters, setFilters] = useState<JobApplicationFilters>({
+    sort: 'id,desc',
+    status: undefined
+  });
+  const { data: jobApplications, isError, isPending, error } = useJobApplications(filters);
   const {mutate: updateStatus, isPending: isUpdating, error: updateError} = useUpdateJobApplicationStatus();
   const {mutate: deleteJobApplication, isPending: isDeleting, error: deleteError} = useDeleteJobApplication();
 
@@ -22,6 +28,11 @@ function App() {
       <JobApplicationForm />
       {updateError &&<p>{updateError.message}</p> }
       {deleteError &&<p>{deleteError.message}</p> }
+      
+      <JobApplicationFilterBar 
+        filters={filters} 
+        onChange={setFilters} 
+      />
       <table >
         <thead >
           <tr>

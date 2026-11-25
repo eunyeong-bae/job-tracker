@@ -1,4 +1,4 @@
-import type { ApplicationStatus } from "../../types/JobApplication";
+import type { ApplicationStatus, SortOption } from "../../types/JobApplication";
 
 export const STATUS_LABEL: Record<ApplicationStatus, string> = {
     BEFORE_APPLY: '지원 전',
@@ -8,3 +8,9 @@ export const STATUS_LABEL: Record<ApplicationStatus, string> = {
     REJECTED: '탈락',
     ACCEPTED: '합격'
 };
+
+export const SORT_LABEL: Record<SortOption, string> = {
+    'id,desc' : '최신순',
+    'salary,desc' : '연봉 높은 순',
+    'companyName,asc' : '회사명순'
+}

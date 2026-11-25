@@ -1,14 +1,16 @@
-import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
+import {useQuery, useMutation, useQueryClient, keepPreviousData} from "@tanstack/react-query";
 import { fetchJobApplications, createJobApplication, updateJobApplicationStatus, deleteJobApplication } from "./api";
-import type { ApplicationStatus } from "../../types/JobApplication";
+import type { ApplicationStatus, JobApplicationFilters } from "../../types/JobApplication";
 
 export const jobApplicationKeys = {
     all: ['jobApplications'] as const,
+    list: (filters: JobApplicationFilters) => [...jobApplicationKeys.all, 'list', filters] as const,
 }
-export const useJobApplications = () => {
+export const useJobApplications = (filters: JobApplicationFilters) => {
     return useQuery({
-        queryKey: jobApplicationKeys.all,
-        queryFn: fetchJobApplications,
+        queryKey: jobApplicationKeys.list(filters),
+        queryFn: () => fetchJobApplications(filters),
+        placeholderData: keepPreviousData,
     });
 }
 
@@ -42,7 +44,7 @@ export const useUpdateJobApplicationStatus = () => {
 
 export const useDeleteJobApplication = () => {
     const queryClient = useQueryClient();
-    
+
     return useMutation({
         mutationFn: deleteJobApplication,
         onSuccess: () => {
