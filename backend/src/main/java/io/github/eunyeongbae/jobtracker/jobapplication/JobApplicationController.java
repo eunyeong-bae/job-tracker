@@ -1,6 +1,8 @@
 package io.github.eunyeongbae.jobtracker.jobapplication;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +21,11 @@ public class JobApplicationController {
 
     //2.GET /api/applications: 지원 목록 전체 조회
     @GetMapping
-    public List<JobApplicationResponse> findAll() {
-        return service.findAll();
+    public List<JobApplicationResponse> findAll(
+            @RequestParam(required = false) Status status,
+            @SortDefault(sort= "id", direction = Sort.Direction.DESC) Sort sort
+    ) {
+        return service.findAll(status, sort);
     }
 
     @PostMapping

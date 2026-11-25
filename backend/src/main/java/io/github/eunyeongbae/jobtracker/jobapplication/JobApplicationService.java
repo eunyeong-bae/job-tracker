@@ -1,5 +1,6 @@
 package io.github.eunyeongbae.jobtracker.jobapplication;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,11 @@ public class JobApplicationService {
     }
 
     // 지원 목록 전체 조회
-    public List<JobApplicationResponse> findAll() {
-        return repository.findAll().stream()
+    public List<JobApplicationResponse> findAll(Status status, Sort sort) {
+        List<JobApplication> applications = (status == null)
+                ? repository.findAll(sort)
+                : repository.findByStatus(status, sort);
+        return applications.stream()
                 .map(JobApplicationResponse::from)
                 .toList();
     }
@@ -58,6 +62,5 @@ public class JobApplicationService {
 
         repository.deleteById(id);
     }
-
 
 }
