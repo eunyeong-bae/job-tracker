@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -13,6 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Transactional(readOnly = true) // 기본은 읽기 전용 트랜잭션
 public class JobApplicationService {
     private final JobApplicationRepository repository;
+    private static final Set<String> SORTABLE_PROPERTIES = Set.of("id", "salary", "companyName");
 
     // 생성자 주입 : spring이 repository 구현체를 넣어 줌
     public JobApplicationService(JobApplicationRepository repository){
@@ -21,6 +23,13 @@ public class JobApplicationService {
 
     // 지원 목록 전체 조회
     public List<JobApplicationResponse> findAll(Status status, Sort sort) {
+        // 허용하지 않는 필드로 정렬하려 하면 400으로 응답하기 위해 먼저 검사
+        for(Sort.Order order : sort) {
+           if(!SORTABLE_PROPERTIES.contains(order.getProperty())){
+               throw new InvalidSortPropertyException(order.getProperty());
+           };
+        }
+
         List<JobApplication> applications = (status == null)
                 ? repository.findAll(sort)
                 : repository.findByStatus(status, sort);

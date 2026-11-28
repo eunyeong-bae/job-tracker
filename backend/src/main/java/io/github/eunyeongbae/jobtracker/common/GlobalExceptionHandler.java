@@ -1,5 +1,6 @@
 package io.github.eunyeongbae.jobtracker.common;
 
+import io.github.eunyeongbae.jobtracker.jobapplication.InvalidSortPropertyException;
 import io.github.eunyeongbae.jobtracker.jobapplication.JobApplicationNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -34,5 +35,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(JobApplicationNotFoundException.class)
     public ProblemDetail handleNotFound(JobApplicationNotFoundException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
+    // 허용하지 않은 정렬 필드 -> 400
+    @ExceptionHandler(InvalidSortPropertyException.class)
+    public ProblemDetail handleInvalidSort(InvalidSortPropertyException e){
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 }
